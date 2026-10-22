@@ -1,0 +1,47 @@
+:root {
+  font-family: 'Poppins', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --color-primary: #18a0fb;
+  --color-background: #e8f5ff;
+  /* --color-background: #f9f9f9; */
+  --color-surface: #ffffff;
+  --color-text: #202244;
+  --color-text-muted: #979797;
+
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 360px;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
