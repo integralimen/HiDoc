@@ -1,0 +1,59 @@
+.container {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d5dce5;
+  border-radius: 10px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.dropdown {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d5dce5;
+  border-radius: 12px;
+  background-color: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(32 34 68 / 10%);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.option {
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.option:hover,
+.highlighted {
+  background-color: #e8f5ff;
+}
+
+.message {
+  margin: 0;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
