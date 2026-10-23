@@ -1,3 +1,4 @@
+import { Button } from '../../shared/ui/Button/Button'
 import { CitySearch } from '../../features/doctor-filters/ui/CitySearch'
 import { useSearchParams } from 'react-router'
 
@@ -31,9 +32,7 @@ export function DoctorFilters() {
 
       <CitySearch />
 
-      <button className={styles.searchButton} type="submit">
-        Search
-      </button>
+      <Button type="submit">Search</Button>
     </form>
   )
 }

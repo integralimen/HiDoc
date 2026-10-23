@@ -2,6 +2,8 @@ import { useId, useState } from 'react'
 
 import styles from './CitySearch.module.css'
 
+import { Input } from '../../../shared/ui/Input/Input'
+
 const cities = ['Warsaw', 'Krakow', 'Gdansk', 'Wroclaw', 'Poznan']
 
 export function CitySearch() {
@@ -40,9 +42,8 @@ export function CitySearch() {
         City
       </label>
 
-      <input
+      <Input
         id={id}
-        className={styles.input}
         name="city"
         type="text"
         role="combobox"

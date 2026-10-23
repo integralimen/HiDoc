@@ -3,6 +3,8 @@ import { useId, useState } from 'react'
 import { specialties } from '../../../entities/doctor/model/specialties'
 import styles from './SpecialtySearch.module.css'
 
+import { Input } from '../../../shared/ui/Input/Input'
+
 export function SpecialtySearch() {
   const id = useId()
   const listId = `${id}-suggestions`
@@ -42,10 +44,9 @@ export function SpecialtySearch() {
       <label className={styles.label} htmlFor={id}>
         Specialty or doctor’s name
       </label>
-      <input
+      <Input
         id={id}
         name={selectedSpecialtyId ? undefined : 'q'}
-        className={styles.input}
         type="text"
         role="combobox"
         autoComplete="off"
