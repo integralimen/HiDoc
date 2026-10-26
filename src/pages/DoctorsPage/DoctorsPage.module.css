@@ -18,6 +18,21 @@
   line-height: 1.6;
 }
 
+.results {
+  margin-top: 3rem;
+}
+
+.resultsTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.resultsCount {
+  margin: 0 0 1.5rem;
+  color: #596579;
+  font-size: 0.875rem;
+}
+
 @media (min-width: 48rem) {
   .intro {
     gap: 3rem;
