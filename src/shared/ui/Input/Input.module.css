@@ -1,0 +1,20 @@
+.input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d5dce5;
+  border-radius: 10px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.input:disabled {
+  background-color: #f1f3f5;
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.input[aria-invalid='true'] {
+  border-color: #c62828;
+}

@@ -1,0 +1,56 @@
+.intro {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding-top: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.2;
+}
+
+.description {
+  max-width: 36rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.results {
+  margin-top: 3rem;
+}
+
+.resultsTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.resultsCount {
+  margin: 0 0 1.5rem;
+  color: #596579;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 48rem) {
+  .intro {
+    gap: 3rem;
+    padding-top: 4rem;
+  }
+}
+
+@media (width < 64rem) {
+  .intro {
+    width: 70%;
+    margin-inline: auto;
+    text-align: start;
+  }
+}
+
+@media (width < 61.25rem) {
+  .intro {
+    width: 100%;
+    max-width: 30rem;
+  }
+}
