@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local PocketBase executable and database
+/backend/pocketbase
+/backend/pb_data/
