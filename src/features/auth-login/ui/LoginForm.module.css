@@ -1,0 +1,19 @@
+.form {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 26rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.error {
+  margin: 0.5rem 0 0;
+  color: #c62828;
+  font-size: 0.875rem;
+}
