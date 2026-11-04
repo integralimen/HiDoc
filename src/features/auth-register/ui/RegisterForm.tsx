@@ -118,15 +118,16 @@ export function RegisterForm() {
 
       {message && (
         <p className={styles.error} role="alert">
-            {message}
+          {message}
         </p>
-    )}
+      )}
 
       <Button type="submit" disabled={isLoading}>
         {isLoading ? 'Creating account…' : 'Create account'}
       </Button>
       <p>
-         Already have an account? <Link to="/login">Sign in</Link>
+        Already have an account? <Link to="/login">Sign in</Link>
       </p>
     </form>
-  )}
+  )
+}
