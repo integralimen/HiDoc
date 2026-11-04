@@ -6,6 +6,7 @@ import { Button } from '../../../shared/ui/Button/Button'
 import { Input } from '../../../shared/ui/Input/Input'
 import styles from './LoginForm.module.css'
 import { pb } from '../../../shared/api/pocketbase'
+import { useNavigate, useSearchParams } from 'react-router'
 
 export function LoginForm() {
   const id = useId()
@@ -17,6 +18,8 @@ export function LoginForm() {
 
   const [login, { isLoading }] = useLoginMutation()
   const { user } = useAuth()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   return (
     <form
@@ -48,6 +51,23 @@ export function LoginForm() {
           }).unwrap()
 
           setPassword('')
+
+          const requestPath = searchParams.get('returnTo')
+
+          const returnTo =
+            requestPath?.startsWith('/') &&
+            !requestPath.startsWith('//') &&
+            !requestPath.includes('\\') &&
+            !Array.from(requestPath).some(
+              (character) =>
+                character.charCodeAt(0) <= 32 ||
+                character.charCodeAt(0) === 127,
+            ) &&
+            requestPath.split(/[?#]/)[0] !== '/login'
+              ? requestPath
+              : '/doctors'
+
+          await navigate(returnTo, { replace: true })
         } catch (error: unknown) {
           setSubmitError(
             typeof error === 'object' &&

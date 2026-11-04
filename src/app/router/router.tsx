@@ -6,6 +6,7 @@ import { DoctorPage } from '../../pages/DoctorPage/DoctorPage'
 import { AppointmentsPage } from '../../pages/AppointmentsPage/AppointmentsPage'
 import { ProfilePage } from '../../pages/ProfilePage/ProfilePage'
 import { LoginPage } from '../../pages/LoginPage/LoginPage'
+import { ProtectedRoute } from './ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -14,8 +15,13 @@ export const router = createBrowserRouter([
       { path: '/', element: <Navigate to="/doctors" replace /> },
       { path: '/doctors', element: <DoctorsPage /> },
       { path: '/doctors/:doctorId', element: <DoctorPage /> },
-      { path: '/appointments', element: <AppointmentsPage /> },
-      { path: '/profile', element: <ProfilePage /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: '/appointments', element: <AppointmentsPage /> },
+          { path: '/profile', element: <ProfilePage /> },
+        ],
+      },
       { path: '/login', element: <LoginPage /> },
       { path: '*', element: <h1>404 Not Found</h1> },
     ],
