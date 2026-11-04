@@ -9,6 +9,11 @@ type LoginCredentials = {
   password: string
 }
 
+type RegisterData = LoginCredentials & {
+  name: string
+  passwordConfirm: string
+}
+
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation<User, LoginCredentials>({
@@ -41,7 +46,28 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    register: build.mutation<User, RegisterData>({
+      async queryFn(data) {
+        try {
+          const user = await pb.collection('users').create<User>({
+            ...data,
+            role: 'patient',
+          })
+
+          return { data: user }
+        } catch (error: unknown) {
+          return {
+            error: {
+              status: error instanceof ClientResponseError ? error.status : 0,
+              message:
+                'Unable to create an account. Check your details and try again.',
+            },
+          }
+        }
+      },
+    }),
   }),
 })
 
-export const { useLoginMutation } = authApi
+export const { useLoginMutation, useRegisterMutation } = authApi

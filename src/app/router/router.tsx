@@ -7,6 +7,7 @@ import { AppointmentsPage } from '../../pages/AppointmentsPage/AppointmentsPage'
 import { ProfilePage } from '../../pages/ProfilePage/ProfilePage'
 import { LoginPage } from '../../pages/LoginPage/LoginPage'
 import { ProtectedRoute } from './ProtectedRoute'
+import { RegisterPage } from '../../pages/RegisterPage/RegisterPage'
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
       { path: '*', element: <h1>404 Not Found</h1> },
     ],
   },
