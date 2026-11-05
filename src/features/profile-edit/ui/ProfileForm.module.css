@@ -1,0 +1,27 @@
+.form {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 26rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.error,
+.success {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.error {
+  color: #c62828;
+}
+
+.success {
+  color: #176b3a;
+}

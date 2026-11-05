@@ -54,3 +54,25 @@
     max-width: 30rem;
   }
 }
+
+.loadingGrid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.cardSkeleton {
+  height: 18rem;
+  border-radius: 16px;
+}
+
+@media (min-width: 48rem) {
+  .loadingGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .loadingGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
