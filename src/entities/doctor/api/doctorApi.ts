@@ -82,7 +82,34 @@ export const doctorApi = baseApi.injectEndpoints({
       },
       providesTags: ['Doctors'],
     }),
+
+    getDoctor: build.query<Doctor, string>({
+      async queryFn(id, { signal }) {
+        try {
+          const record = await pb
+            .collection('doctors')
+            .getOne<DoctorRecord>(id, {
+              expand: 'specialty',
+              requestKey: null,
+              fetch: (url, options) => fetch(url, { ...options, signal }),
+            })
+
+          return { data: mapDoctor(record) }
+        } catch (error: unknown) {
+          return {
+            error: {
+              status: error instanceof ClientResponseError ? error.status : 0,
+              message:
+                error instanceof Error
+                  ? error.message
+                  : 'Failed to load doctor',
+            },
+          }
+        }
+      },
+      providesTags: ['Doctors'],
+    }),
   }),
 })
 
-export const { useGetDoctorsQuery } = doctorApi
+export const { useGetDoctorsQuery, useGetDoctorQuery } = doctorApi
