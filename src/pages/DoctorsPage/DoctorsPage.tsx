@@ -4,9 +4,29 @@ import { DoctorList } from '../../widgets/DoctorList/DoctorList'
 import { useGetDoctorsQuery } from '../../entities/doctor/api/doctorApi'
 import { Button } from '../../shared/ui/Button/Button'
 import { Skeleton } from '../../shared/ui/Skeleton/Skeleton'
+import { useSearchParams } from 'react-router'
 
 export function DoctorsPage() {
-  const { data, isLoading, isError, refetch } = useGetDoctorsQuery(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const requestedPage = Number(searchParams.get('page') ?? 1)
+  const page =
+    Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1
+
+  const {
+    currentData: data,
+    isFetching,
+    isError,
+    refetch,
+  } = useGetDoctorsQuery(page)
+
+  function changePage(nextPage: number) {
+    setSearchParams((previous) => {
+      const params = new URLSearchParams(previous)
+      params.set('page', String(nextPage))
+      return params
+    })
+  }
   return (
     <main>
       <section className={styles.intro}>
@@ -26,7 +46,7 @@ export function DoctorsPage() {
           Doctors
         </h2>
 
-        {isLoading ? (
+        {isFetching ? (
           <div role="status" aria-label="Loading doctors">
             <div className={styles.loadingGrid}>
               {Array.from({ length: 9 }, (_, index) => (
@@ -47,6 +67,28 @@ export function DoctorsPage() {
             </p>
 
             <DoctorList doctors={data.items} />
+
+            {data.totalPages > 1 && (
+              <nav className={styles.pagination} aria-label="Catalog pages">
+                <Button
+                  disabled={page <= 1}
+                  onClick={() => changePage(page - 1)}
+                >
+                  Previous
+                </Button>
+
+                <span aria-live="polite">
+                  Page {page} of {data.totalPages}
+                </span>
+
+                <Button
+                  disabled={page >= data.totalPages}
+                  onClick={() => changePage(page + 1)}
+                >
+                  Next
+                </Button>
+              </nav>
+            )}
           </>
         ) : null}
       </section>
