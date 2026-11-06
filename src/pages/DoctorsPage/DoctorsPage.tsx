@@ -18,7 +18,12 @@ export function DoctorsPage() {
     isFetching,
     isError,
     refetch,
-  } = useGetDoctorsQuery(page)
+  } = useGetDoctorsQuery({
+    page,
+    q: searchParams.get('q') ?? '',
+    city: searchParams.get('city') ?? '',
+    specialty: searchParams.get('specialty') ?? '',
+  })
 
   function changePage(nextPage: number) {
     setSearchParams((previous) => {
@@ -39,7 +44,7 @@ export function DoctorsPage() {
           </p>
         </div>
       </section>
-      <DoctorFilters />
+      <DoctorFilters key={searchParams.toString()} />
 
       <section className={styles.results} aria-labelledby="doctors-heading">
         <h2 id="doctors-heading" className={styles.resultsTitle}>

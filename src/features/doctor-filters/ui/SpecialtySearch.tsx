@@ -4,14 +4,24 @@ import { specialties } from '../../../entities/doctor/model/specialties'
 import styles from './SpecialtySearch.module.css'
 
 import { Input } from '../../../shared/ui/Input/Input'
+import { useSearchParams } from 'react-router'
 
 export function SpecialtySearch() {
   const id = useId()
   const listId = `${id}-suggestions`
 
-  const [text, setText] = useState('')
+  const [searchParams] = useSearchParams()
+
+  const initialSpecialty = specialties.find(
+    (item) => item.id === searchParams.get('specialty'),
+  )
+
+  const [text, setText] = useState(
+    initialSpecialty?.name ?? searchParams.get('q') ?? '',
+  )
+
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | null>(
-    null,
+    initialSpecialty?.id ?? null,
   )
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)

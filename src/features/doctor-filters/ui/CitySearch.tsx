@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { useSearchParams } from 'react-router'
 
 import styles from './CitySearch.module.css'
 
@@ -10,7 +11,8 @@ export function CitySearch() {
   const id = useId()
   const listId = `${id}-cities`
 
-  const [text, setText] = useState('')
+  const [searchParams] = useSearchParams()
+  const [text, setText] = useState(searchParams.get('city') ?? '')
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
 
