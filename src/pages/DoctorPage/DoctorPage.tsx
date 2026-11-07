@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import { useGetDoctorQuery } from '../../entities/doctor/api/doctorApi'
 import { Button } from '../../shared/ui/Button/Button'
 import styles from './DoctorPage.module.css'
+import { SlotCalendar } from '../../widgets/SlotCalendar/SlotCalendar'
 
 export function DoctorPage() {
   const { doctorId = '' } = useParams()
@@ -47,16 +48,14 @@ export function DoctorPage() {
       <Link to="/doctors">Back to doctors</Link>
 
       <article className={styles.profile}>
-        <div className={styles.hero}>
-          <p className={styles.heading}>Doctor Detail</p>
-
+        <div className={styles.portrait}>
           {doctor.photo ? (
             <img
               className={styles.photo}
               src={doctor.photo}
               alt={`Dr. ${doctor.fullName}`}
-              width={360}
-              height={360}
+              width={400}
+              height={400}
             />
           ) : (
             <div className={styles.avatar} aria-hidden="true">
@@ -67,18 +66,24 @@ export function DoctorPage() {
                 .join('')}
             </div>
           )}
+        </div>
+
+        <header className={styles.identity}>
+          <p className={styles.specialty}>{doctor.specialty.name}</p>
+          <h1 className={styles.name}>Dr. {doctor.fullName}</h1>
+          <p className={styles.location}>
+            {doctor.clinic} · {doctor.city}
+          </p>
 
           <dl className={styles.details}>
             <div>
               <dt>Experience</dt>
               <dd>{doctor.experienceYears} years</dd>
             </div>
-
             <div>
               <dt>Rating</dt>
               <dd>{doctor.rating.toFixed(1)} / 5</dd>
             </div>
-
             {doctor.patientsCount !== null && (
               <div>
                 <dt>Patients</dt>
@@ -86,17 +91,9 @@ export function DoctorPage() {
               </div>
             )}
           </dl>
-        </div>
+        </header>
 
-        <div className={styles.content}>
-          <header>
-            <h1 className={styles.name}>Dr. {doctor.fullName}</h1>
-            <p className={styles.specialty}>{doctor.specialty.name}</p>
-            <p>
-              {doctor.clinic} · {doctor.city}
-            </p>
-          </header>
-
+        <div className={styles.biography}>
           <section>
             <h2>About doctor</h2>
             <p>{doctor.about || 'No description available.'}</p>
@@ -105,7 +102,7 @@ export function DoctorPage() {
           <section>
             <h2>Education</h2>
             {doctor.education.length ? (
-              <ul>
+              <ul className={styles.education}>
                 {doctor.education.map((item, index) => (
                   <li key={`${item}-${index}`}>{item}</li>
                 ))}
@@ -114,11 +111,16 @@ export function DoctorPage() {
               <p>No education information available.</p>
             )}
           </section>
+        </div>
 
+        <section className={styles.booking} aria-labelledby="booking-heading">
+          <h2 id="booking-heading">Book an appointment</h2>
           <p className={styles.price}>
             {doctor.price} <span>PLN / visit</span>
           </p>
-        </div>
+
+          <SlotCalendar key={doctor.id} doctorId={doctor.id} />
+        </section>
       </article>
     </main>
   )
