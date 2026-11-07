@@ -6,6 +6,7 @@ import styles from './SlotCalendar.module.css'
 
 import arrowLeft from '../../shared/assets/icons/arrow-left.svg'
 import arrowRight from '../../shared/assets/icons/arrow-right.svg'
+import { BookAppointment } from '../../features/appointment-create/ui/BookAppointment'
 
 type SlotCalendarProps = {
   doctorId: string
@@ -79,6 +80,7 @@ export function SlotCalendar({ doctorId }: SlotCalendarProps) {
 
   const rowCount = Math.max(2, ...columns.map((column) => column.slots.length))
   const visibleRows = showAll ? rowCount : Math.min(rowCount, 5)
+  const selectedSlot = slots?.find((slot) => slot.id === selectedId)
 
   function changePage(nextOffset: number) {
     setOffset(nextOffset)
@@ -174,6 +176,17 @@ export function SlotCalendar({ doctorId }: SlotCalendarProps) {
             </button>
           )}
         </>
+      )}
+
+      {selectedSlot && (
+        <div className={styles.confirmation}>
+          <BookAppointment
+            key={selectedSlot.id}
+            doctorId={doctorId}
+            slotId={selectedSlot.id}
+            datetime={selectedSlot.datetime}
+          />
+        </div>
       )}
     </section>
   )

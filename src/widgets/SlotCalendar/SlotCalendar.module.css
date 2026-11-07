@@ -137,3 +137,15 @@
     background: #d4edff;
   }
 }
+
+.confirmation {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.confirmation p {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}

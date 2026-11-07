@@ -1,0 +1,62 @@
+.dialog {
+  box-sizing: border-box;
+  width: calc(100% - 2rem);
+  max-width: 26rem;
+  margin: auto;
+  padding: 1.75rem;
+  border: 0;
+  border-radius: 1.25rem;
+  background: white;
+  color: #202244;
+  box-shadow: 0 1.5rem 4rem rgb(15 23 42 / 20%);
+}
+
+.dialog::backdrop {
+  background: rgb(15 23 42 / 40%);
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.dialog p {
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.close {
+  padding: 0.625rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.625rem;
+  background: white;
+  color: #202244;
+  font: inherit;
+  cursor: pointer;
+}
+
+.actions .ok {
+  border: 1px solid #cbd5e1;
+  background: transparent;
+  color: #0878b9;
+}
+
+.actions .ok:focus-visible {
+  outline: 1px solid #0878b9;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .actions .close:hover,
+  .actions .ok:hover:not(:disabled) {
+    background: #e8f5ff;
+    color: #0878b9;
+  }
+}
