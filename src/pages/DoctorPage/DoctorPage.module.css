@@ -1,0 +1,188 @@
+.page {
+  padding-block: 1rem;
+}
+
+.profile {
+  display: grid;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: white;
+  overflow-wrap: anywhere;
+}
+
+.portrait,
+.identity,
+.biography,
+.booking {
+  min-width: 0;
+}
+
+.portrait {
+  display: flex;
+  justify-content: center;
+}
+
+.photo,
+.avatar {
+  width: 100%;
+  max-width: 25rem;
+  aspect-ratio: 1;
+  border-radius: 1.25rem;
+}
+
+.photo {
+  display: block;
+  height: auto;
+  object-fit: cover;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  background: #e8f5ff;
+  font-size: 4rem;
+}
+
+.identity {
+  align-self: center;
+}
+
+.specialty {
+  margin: 0 0 0.75rem;
+  color: #0878b9;
+  font-weight: 500;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.location {
+  margin: 1rem 0 0;
+  color: #596579;
+  line-height: 1.6;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.details div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.375rem;
+}
+
+.details dt {
+  color: #596579;
+  font-size: 0.8125rem;
+}
+
+.details dd {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.biography {
+  display: grid;
+  align-content: start;
+  gap: 2rem;
+  line-height: 1.7;
+}
+
+.profile h2 {
+  margin: 0 0 0.875rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.biography p {
+  margin: 0;
+  color: #596579;
+}
+
+.education {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #596579;
+}
+
+.booking {
+  align-self: start;
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  background: #f8fafc;
+}
+
+.price {
+  margin: 0 0 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.price span {
+  color: #596579;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+@media (min-width: 64rem) {
+  .profile {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 3rem;
+    padding: 3rem;
+  }
+
+  .portrait {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .identity {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .biography {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .booking {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+@media (width < 48rem) {
+  .page {
+    margin: -1.5rem -1rem;
+    padding: 1rem 0 0;
+    background: white;
+  }
+
+  .page > a {
+    display: inline-block;
+    margin-inline: 1rem;
+  }
+
+  .profile {
+    margin-top: 1rem;
+    padding: 1.5rem 1rem;
+    border-radius: 0;
+  }
+}
