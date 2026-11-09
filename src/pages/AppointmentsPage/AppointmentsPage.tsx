@@ -22,15 +22,26 @@ export function AppointmentsPage() {
     isLoading,
     isError,
     refetch,
-  } = useGetAppointmentsQuery(user?.id ?? '', {
-    skip: !user,
-  })
+  } = useGetAppointmentsQuery(
+    {
+      userId: user?.id ?? '',
+      role: user?.role ?? 'patient',
+    },
+    { skip: !user },
+  )
 
+  if (!user) return null
   if (!user) return null
 
   return (
     <main>
-      <h1>My appointments</h1>
+      <h1>
+        {user.role === 'doctor'
+          ? 'Appointments with me'
+          : user.role === 'admin'
+            ? 'All appointments'
+            : 'My appointments'}
+      </h1>
 
       {isLoading ? (
         <p role="status">Loading appointments...</p>
@@ -88,8 +99,8 @@ export function AppointmentsPage() {
         </ul>
       ) : (
         <div>
-          <p>You have no appointments yet.</p>
-          <Link to="/doctors">Find a doctor</Link>
+          <p>No appointments found.</p>
+          {user.role === 'patient' && <Link to="/doctors">Find a doctor</Link>}
         </div>
       )}
     </main>

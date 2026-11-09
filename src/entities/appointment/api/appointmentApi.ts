@@ -20,6 +20,10 @@ export type Appointment = {
     }
   }
 }
+type AppointmentsQuery = {
+  userId: string
+  role: 'patient' | 'doctor' | 'admin'
+}
 
 export const appointmentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -49,13 +53,22 @@ export const appointmentApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Slots', 'Appointments'],
     }),
-    getAppointments: build.query<Appointment[], string>({
-      async queryFn(userId, { signal }) {
+    getAppointments: build.query<Appointment[], AppointmentsQuery>({
+      async queryFn({ userId, role }, { signal }) {
         try {
+          const filter =
+            role === 'admin'
+              ? ''
+              : pb.filter(
+                  role === 'doctor'
+                    ? 'doctor.user = {:userId}'
+                    : 'user = {:userId}',
+                  { userId },
+                )
           const records = await pb
             .collection('appointments')
             .getFullList<Appointment>({
-              filter: pb.filter('user = {:userId}', { userId }),
+              filter,
               expand: 'doctor,slot',
               sort: '-created',
               requestKey: null,
