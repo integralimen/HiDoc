@@ -2,6 +2,7 @@ import { ClientResponseError } from 'pocketbase'
 
 import { baseApi } from '../../../shared/api/baseApi'
 import { pb } from '../../../shared/api/pocketbase'
+import { getApiError } from '../../../shared/api/getApiError'
 
 export type Appointment = {
   id: string
@@ -41,13 +42,10 @@ export const appointmentApi = baseApi.injectEndpoints({
           return { data: result }
         } catch (error: unknown) {
           return {
-            error: {
-              status: error instanceof ClientResponseError ? error.status : 0,
-              message:
-                error instanceof ClientResponseError
-                  ? error.response.message || 'Unable to book appointment.'
-                  : 'Unable to connect. Please try again.',
-            },
+            error: getApiError(
+              error,
+              'Unable to book appointment. Please try again.',
+            ),
           }
         }
       },
@@ -104,13 +102,10 @@ export const appointmentApi = baseApi.injectEndpoints({
           return { data: result }
         } catch (error: unknown) {
           return {
-            error: {
-              status: error instanceof ClientResponseError ? error.status : 0,
-              message:
-                error instanceof ClientResponseError
-                  ? error.response.message || 'Unable to cancel appointment.'
-                  : 'Unable to connect. Please try again.',
-            },
+            error: getApiError(
+              error,
+              'Unable to book appointment. Please try again.',
+            ),
           }
         }
       },
