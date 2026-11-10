@@ -10,7 +10,15 @@ export const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     updateProfile: build.mutation<User, ProfileData>({
       async queryFn({ name, phone }) {
-        const userId = pb.authStore.record?.id
+        const record: unknown = pb.authStore.record
+
+        const userId =
+          typeof record === 'object' &&
+          record !== null &&
+          'id' in record &&
+          typeof record.id === 'string'
+            ? record.id
+            : ''
 
         if (!pb.authStore.isValid || !userId) {
           return {
