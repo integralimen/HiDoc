@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 
 import { Card } from '../../../../shared/ui/Card/Card'
 import type { Doctor } from '../../model/types'
@@ -9,6 +9,7 @@ type DoctorCardProps = {
 }
 
 export function DoctorCard({ doctor }: DoctorCardProps) {
+  const { search } = useLocation()
   const initials = doctor.fullName
     .split(' ')
     .map((part) => part[0])
@@ -59,7 +60,10 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
           {doctor.price} <span>PLN / visit</span>
         </p>
 
-        <Link className={styles.profileLink} to={`/doctors/${doctor.id}`}>
+        <Link
+          className={styles.profileLink}
+          to={`/doctors/${doctor.id}${search}`}
+        >
           View profile
           <span className={styles.visuallyHidden}>
             {' '}
