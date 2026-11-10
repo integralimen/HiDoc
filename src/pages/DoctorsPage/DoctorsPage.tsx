@@ -4,12 +4,14 @@ import { DoctorList } from '../../widgets/DoctorList/DoctorList'
 import { useGetDoctorsQuery } from '../../entities/doctor/api/doctorApi'
 import { Button } from '../../shared/ui/Button/Button'
 import { Skeleton } from '../../shared/ui/Skeleton/Skeleton'
-import { useSearchParams } from 'react-router'
+import { useQueryParams } from '../../shared/lib/hooks/useQueryParams'
 
 export function DoctorsPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { getParam, updateParams } = useQueryParams<
+    'q' | 'city' | 'specialty' | 'page'
+  >()
 
-  const requestedPage = Number(searchParams.get('page') ?? 1)
+  const requestedPage = Number(getParam('page') || 1)
   const page =
     Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1
 
@@ -20,17 +22,13 @@ export function DoctorsPage() {
     refetch,
   } = useGetDoctorsQuery({
     page,
-    q: searchParams.get('q') ?? '',
-    city: searchParams.get('city') ?? '',
-    specialty: searchParams.get('specialty') ?? '',
+    q: getParam('q'),
+    city: getParam('city'),
+    specialty: getParam('specialty'),
   })
 
   function changePage(nextPage: number) {
-    setSearchParams((previous) => {
-      const params = new URLSearchParams(previous)
-      params.set('page', String(nextPage))
-      return params
-    })
+    updateParams({ page: String(nextPage) })
   }
   return (
     <main>
@@ -44,7 +42,7 @@ export function DoctorsPage() {
           </p>
         </div>
       </section>
-      <DoctorFilters key={searchParams.toString()} />
+      <DoctorFilters />
 
       <section className={styles.results} aria-labelledby="doctors-heading">
         <h2 id="doctors-heading" className={styles.resultsTitle}>

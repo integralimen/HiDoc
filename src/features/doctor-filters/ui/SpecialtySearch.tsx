@@ -1,16 +1,17 @@
-import { useId, useState } from 'react'
-
+import { useEffect, useId, useState } from 'react'
 import { specialties } from '../../../entities/doctor/model/specialties'
 import styles from './SpecialtySearch.module.css'
-
+import { useDebounce } from '../../../shared/lib/hooks/useDebounce'
+import { useQueryParams } from '../../../shared/lib/hooks/useQueryParams'
 import { Input } from '../../../shared/ui/Input/Input'
-import { useSearchParams } from 'react-router'
 
 export function SpecialtySearch() {
   const id = useId()
   const listId = `${id}-suggestions`
 
-  const [searchParams] = useSearchParams()
+  const { searchParams, updateParams } = useQueryParams<
+    'q' | 'specialty' | 'page'
+  >()
 
   const initialSpecialty = specialties.find(
     (item) => item.id === searchParams.get('specialty'),
@@ -23,8 +24,51 @@ export function SpecialtySearch() {
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | null>(
     initialSpecialty?.id ?? null,
   )
+
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
+
+  const source = JSON.stringify([
+    searchParams.get('q'),
+    searchParams.get('specialty'),
+  ])
+
+  const [previousSource, setPreviousSource] = useState(source)
+
+  // Restore the input when URL parameters change.
+  if (source !== previousSource) {
+    setPreviousSource(source)
+    setText(initialSpecialty?.name ?? searchParams.get('q') ?? '')
+    setSelectedSpecialtyId(initialSpecialty?.id ?? null)
+  }
+
+  const debouncedText = useDebounce(text, 300)
+  const debouncedSpecialty = useDebounce(selectedSpecialtyId, 300)
+
+  useEffect(() => {
+    if (text !== debouncedText || selectedSpecialtyId !== debouncedSpecialty) {
+      return
+    }
+
+    const q = debouncedSpecialty ? '' : debouncedText.trim()
+    const specialty = debouncedSpecialty ?? ''
+
+    if (
+      (searchParams.get('q') ?? '') === q &&
+      (searchParams.get('specialty') ?? '') === specialty
+    ) {
+      return
+    }
+
+    updateParams({ q, specialty, page: '' }, true)
+  }, [
+    text,
+    selectedSpecialtyId,
+    debouncedText,
+    debouncedSpecialty,
+    searchParams,
+    updateParams,
+  ])
 
   const suggestions = specialties.filter((specialty) =>
     specialty.name.toLowerCase().includes(text.trim().toLowerCase()),
@@ -115,7 +159,7 @@ export function SpecialtySearch() {
         <input type="hidden" name="specialty" value={selectedSpecialtyId} />
       )}
 
-      {isOpen && (
+      {isOpen && suggestions.length > 0 && (
         <div className={styles.dropdown}>
           <ul id={listId} className={styles.list} role="listbox">
             {suggestions.map((specialty, index) => (
@@ -134,12 +178,6 @@ export function SpecialtySearch() {
               </li>
             ))}
           </ul>
-
-          {suggestions.length === 0 && (
-            <p className={styles.message} role="status">
-              No matching specialties. You can still search by doctor’s name.
-            </p>
-          )}
         </div>
       )}
     </div>
