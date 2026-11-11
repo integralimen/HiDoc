@@ -31,3 +31,121 @@
     margin-bottom: 0.75rem;
   }
 }
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.extraFilters input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.extraFilters input[type='number']::-webkit-inner-spin-button,
+.extraFilters input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.sortDropdown {
+  position: relative;
+  min-width: 0;
+}
+
+.sortControl {
+  display: block;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d5dce5;
+  border-radius: 10px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  list-style: none;
+  cursor: pointer;
+}
+
+.sortControl::-webkit-details-marker {
+  display: none;
+}
+
+.sortMenu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d5dce5;
+  border-radius: 12px;
+  background-color: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(32 34 68 / 10%);
+}
+
+.sortOption {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sortOption:hover,
+.sortOption:focus-visible,
+.sortOption[aria-pressed='true'] {
+  background-color: #e8f5ff;
+}
+
+.moreFilters {
+  grid-column: 1 / -1;
+}
+
+.moreFilters > summary {
+  width: fit-content;
+  padding-block: 0.5rem;
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.extraFilters {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 61.25rem) {
+  .extraFilters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ratingLabel,
+.stars {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ratingLabel {
+  gap: 0.5rem;
+}
+
+.stars {
+  gap: 0.25rem;
+  vertical-align: middle;
+}
+
+.star {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}

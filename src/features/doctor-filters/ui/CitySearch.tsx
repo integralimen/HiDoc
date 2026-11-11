@@ -1,5 +1,6 @@
-import { useId, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useEffect, useId, useState } from 'react'
+import { useQueryParams } from '../../../shared/lib/hooks/useQueryParams'
+import { useDebounce } from '../../../shared/lib/hooks/useDebounce'
 
 import styles from './CitySearch.module.css'
 
@@ -11,8 +12,27 @@ export function CitySearch() {
   const id = useId()
   const listId = `${id}-cities`
 
-  const [searchParams] = useSearchParams()
-  const [text, setText] = useState(searchParams.get('city') ?? '')
+  const { getParam, updateParams } = useQueryParams<'city' | 'page'>()
+  const cityFromUrl = getParam('city')
+  const [text, setText] = useState(cityFromUrl)
+  const [previousCity, setPreviousCity] = useState(cityFromUrl)
+
+  if (cityFromUrl !== previousCity) {
+    setPreviousCity(cityFromUrl)
+    setText(cityFromUrl)
+  }
+
+  const debouncedText = useDebounce(text, 300)
+
+  useEffect(() => {
+    if (text !== debouncedText) return
+
+    const city = debouncedText.trim()
+
+    if (city !== cityFromUrl) {
+      updateParams({ city, page: '' }, true)
+    }
+  }, [text, debouncedText, cityFromUrl, updateParams])
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
 
@@ -26,6 +46,10 @@ export function CitySearch() {
     if (!city) return
 
     setText(city)
+    updateParams({ city, page: '' })
+    setIsOpen(false)
+    setActiveIndex(-1)
+    updateParams({ city, page: '' })
     setIsOpen(false)
     setActiveIndex(-1)
   }
