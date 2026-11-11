@@ -2,6 +2,7 @@ import { ClientResponseError } from 'pocketbase'
 
 import { baseApi } from '../../../shared/api/baseApi'
 import { pb } from '../../../shared/api/pocketbase'
+import { getApiError } from '../../../shared/api/getApiError'
 
 export type Appointment = {
   id: string
@@ -30,24 +31,28 @@ export const appointmentApi = baseApi.injectEndpoints({
     createAppointment: build.mutation<{ id: string }, string>({
       async queryFn(slot) {
         try {
-          const result = await pb.send<{ id: string }>(
-            '/api/hidoc/appointments',
-            {
-              method: 'POST',
-              body: { slot },
-            },
-          )
+          const result = await pb.send<unknown>('/api/hidoc/appointments', {
+            method: 'POST',
+            body: { slot },
+          })
 
-          return { data: result }
+          if (
+            typeof result !== 'object' ||
+            result === null ||
+            !('id' in result) ||
+            typeof result.id !== 'string' ||
+            !result.id.trim()
+          ) {
+            throw new Error('Invalid booking response')
+          }
+
+          return { data: { id: result.id } }
         } catch (error: unknown) {
           return {
-            error: {
-              status: error instanceof ClientResponseError ? error.status : 0,
-              message:
-                error instanceof ClientResponseError
-                  ? error.response.message || 'Unable to book appointment.'
-                  : 'Unable to connect. Please try again.',
-            },
+            error: getApiError(
+              error,
+              'Unable to book appointment. Please try again.',
+            ),
           }
         }
       },
@@ -94,23 +99,34 @@ export const appointmentApi = baseApi.injectEndpoints({
     >({
       async queryFn(id) {
         try {
-          const result = await pb.send<{
-            id: string
-            status: 'cancelled'
-          }>(`/api/hidoc/appointments/${id}/cancel`, {
-            method: 'POST',
-          })
+          const result = await pb.send<unknown>(
+            `/api/hidoc/appointments/${id}/cancel`,
+            { method: 'POST' },
+          )
 
-          return { data: result }
+          if (
+            typeof result !== 'object' ||
+            result === null ||
+            !('id' in result) ||
+            result.id !== id ||
+            !('status' in result) ||
+            result.status !== 'cancelled'
+          ) {
+            throw new Error('Invalid cancellation response')
+          }
+
+          const data: { id: string; status: 'cancelled' } = {
+            id,
+            status: 'cancelled',
+          }
+
+          return { data }
         } catch (error: unknown) {
           return {
-            error: {
-              status: error instanceof ClientResponseError ? error.status : 0,
-              message:
-                error instanceof ClientResponseError
-                  ? error.response.message || 'Unable to cancel appointment.'
-                  : 'Unable to connect. Please try again.',
-            },
+            error: getApiError(
+              error,
+              'Unable to cancel appointment. Please try again.',
+            ),
           }
         }
       },

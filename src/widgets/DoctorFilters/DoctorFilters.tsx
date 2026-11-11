@@ -1,13 +1,14 @@
 import { Button } from '../../shared/ui/Button/Button'
 import { CitySearch } from '../../features/doctor-filters/ui/CitySearch'
-import { useSearchParams } from 'react-router'
+import { useQueryParams } from '../../shared/lib/hooks/useQueryParams'
 
 import { SpecialtySearch } from '../../features/doctor-filters/ui/SpecialtySearch'
 import styles from './DoctorFilters.module.css'
 
 export function DoctorFilters() {
-  const [, setSearchParams] = useSearchParams()
-
+  const { getParam, updateParams } = useQueryParams<
+    'q' | 'specialty' | 'city' | 'page'
+  >()
   return (
     <form
       className={styles.form}
@@ -15,22 +16,23 @@ export function DoctorFilters() {
         event.preventDefault()
 
         const formData = new FormData(event.currentTarget)
-        const params = new URLSearchParams()
 
-        for (const key of ['q', 'specialty', 'city']) {
-          const value = formData.get(key)
-
-          if (typeof value === 'string' && value.trim()) {
-            params.set(key, value.trim())
-          }
+        function getValue(name: string): string {
+          const value = formData.get(name)
+          return typeof value === 'string' ? value.trim() : ''
         }
 
-        setSearchParams(params)
+        updateParams({
+          q: getValue('q'),
+          specialty: getValue('specialty'),
+          city: getValue('city'),
+          page: '',
+        })
       }}
     >
       <SpecialtySearch />
 
-      <CitySearch />
+      <CitySearch key={getParam('city')} />
 
       <Button type="submit">Search</Button>
     </form>

@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 
 import { useGetDoctorQuery } from '../../entities/doctor/api/doctorApi'
 import { Button } from '../../shared/ui/Button/Button'
@@ -7,6 +7,8 @@ import { SlotCalendar } from '../../widgets/SlotCalendar/SlotCalendar'
 
 export function DoctorPage() {
   const { doctorId = '' } = useParams()
+  const { search } = useLocation()
+  const catalogUrl = `/doctors${search}`
 
   const {
     currentData: doctor,
@@ -27,7 +29,7 @@ export function DoctorPage() {
     return (
       <main>
         <h1>Doctor not found</h1>
-        <Link to="/doctors">Back to doctors</Link>
+        <Link to={catalogUrl}>Back to doctors</Link>
       </main>
     )
   }
@@ -45,7 +47,7 @@ export function DoctorPage() {
 
   return (
     <main className={styles.page}>
-      <Link to="/doctors">Back to doctors</Link>
+      <Link to={catalogUrl}>Back to doctors</Link>
 
       <article className={styles.profile}>
         <div className={styles.portrait}>
