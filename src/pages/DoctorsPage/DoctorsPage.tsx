@@ -11,13 +11,21 @@ import { baseApi } from '../../shared/api/baseApi'
 export function DoctorsPage() {
   const dispatch = useDispatch()
   const { getParam, updateParams } = useQueryParams<
-    'q' | 'city' | 'specialty' | 'page'
+    'q' | 'city' | 'specialty' | 'page' | 'maxPrice' | 'minRating' | 'sort'
   >()
 
   const requestedPage = Number(getParam('page') || 1)
   const page =
     Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1
+  const maxPrice = getParam('maxPrice')
+  const requestedRating = getParam('minRating')
+  const minRating = /^[1-5]$/.test(requestedRating) ? requestedRating : ''
+  const requestedSort = getParam('sort')
 
+  const sort =
+    requestedSort === 'priceAsc' || requestedSort === 'priceDesc'
+      ? requestedSort
+      : 'rating'
   const {
     currentData: data,
     isFetching,
@@ -27,6 +35,9 @@ export function DoctorsPage() {
     q: getParam('q'),
     city: getParam('city'),
     specialty: getParam('specialty'),
+    maxPrice: maxPrice ? Number(maxPrice) : undefined,
+    minRating: minRating ? Number(minRating) : undefined,
+    sort,
   })
 
   function changePage(nextPage: number) {

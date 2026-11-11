@@ -18,12 +18,18 @@ type DoctorsQuery = {
   q: string
   city: string
   specialty: string
+  maxPrice?: number
+  minRating?: number
+  sort?: 'rating' | 'priceAsc' | 'priceDesc'
 }
 
 export const doctorApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getDoctors: build.query<DoctorsPage, DoctorsQuery>({
-      async queryFn({ page, q, city, specialty }, { signal }) {
+      async queryFn(
+        { page, q, city, specialty, maxPrice, minRating, sort = 'rating' },
+        { signal },
+      ) {
         try {
           const filters = []
 
@@ -40,12 +46,34 @@ export const doctorApi = baseApi.injectEndpoints({
               pb.filter('specialty.slug = {:specialty}', { specialty }),
             )
           }
+          if (
+            maxPrice !== undefined &&
+            Number.isFinite(maxPrice) &&
+            maxPrice >= 0
+          ) {
+            filters.push(pb.filter('price <= {:maxPrice}', { maxPrice }))
+          }
+
+          if (
+            minRating !== undefined &&
+            Number.isFinite(minRating) &&
+            minRating >= 0 &&
+            minRating <= 5
+          ) {
+            filters.push(pb.filter('rating >= {:minRating}', { minRating }))
+          }
+
+          const sorting = {
+            rating: '-rating,id',
+            priceAsc: 'price,id',
+            priceDesc: '-price,id',
+          }
           const result = await pb
             .collection('doctors')
             .getList<DoctorRecord>(page, 9, {
               expand: 'specialty',
               filter: filters.join(' && '),
-              sort: '-rating,id',
+              sort: sorting[sort],
               requestKey: null,
               fetch: (url, options) => fetch(url, { ...options, signal }),
             })
