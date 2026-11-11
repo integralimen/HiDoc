@@ -3,6 +3,7 @@ import { ClientResponseError } from 'pocketbase'
 import { baseApi } from '../../../shared/api/baseApi'
 import { pb } from '../../../shared/api/pocketbase'
 import { getApiError } from '../../../shared/api/getApiError'
+import type { RootState } from '../../../app/store/store'
 
 export type Appointment = {
   id: string
@@ -130,7 +131,38 @@ export const appointmentApi = baseApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: ['Slots', 'Appointments'],
+      async onQueryStarted(
+        id,
+        { dispatch, getState, queryFulfilled },
+      ): Promise<void> {
+        const queries = appointmentApi.util.selectCachedArgsForQuery(
+          getState() as RootState,
+          'getAppointments',
+        )
+
+        const patches = queries.map((args) =>
+          dispatch(
+            appointmentApi.util.updateQueryData(
+              'getAppointments',
+              args,
+              (appointments) => {
+                const appointment = appointments.find((item) => item.id === id)
+
+                if (appointment) {
+                  appointment.status = 'cancelled'
+                }
+              },
+            ),
+          ),
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patches.forEach((patch) => patch.undo())
+        }
+      },
+      invalidatesTags: (result) => (result ? ['Slots', 'Appointments'] : []),
     }),
   }),
 })

@@ -3,22 +3,28 @@ import { Button } from '../../../shared/ui/Button/Button'
 
 type CancelAppointmentProps = {
   appointmentId: string
+  canCancel: boolean
 }
 
-export function CancelAppointment({ appointmentId }: CancelAppointmentProps) {
+export function CancelAppointment({
+  appointmentId,
+  canCancel,
+}: CancelAppointmentProps) {
   const [cancelAppointment, { isLoading, error }] =
     useCancelAppointmentMutation()
 
   return (
     <div>
-      <Button
-        disabled={isLoading}
-        onClick={() => {
-          void cancelAppointment(appointmentId)
-        }}
-      >
-        {isLoading ? 'Cancelling...' : 'Cancel appointment'}
-      </Button>
+      {(canCancel || isLoading) && (
+        <Button
+          disabled={isLoading}
+          onClick={() => {
+            void cancelAppointment(appointmentId)
+          }}
+        >
+          {isLoading ? 'Cancelling...' : 'Cancel appointment'}
+        </Button>
+      )}
 
       {error && (
         <p role="alert">

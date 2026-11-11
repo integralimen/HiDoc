@@ -33,7 +33,6 @@ export function AppointmentsPage() {
   )
 
   if (!user) return null
-  if (!user) return null
 
   return (
     <main>
@@ -96,11 +95,12 @@ export function AppointmentsPage() {
                   </p>
                 </div>
 
-                {canCancel && (
-                  <div className={styles.actions}>
-                    <CancelAppointment appointmentId={appointment.id} />
-                  </div>
-                )}
+                <div className={styles.actions}>
+                  <CancelAppointment
+                    appointmentId={appointment.id}
+                    canCancel={canCancel}
+                  />
+                </div>
               </li>
             )
           })}
