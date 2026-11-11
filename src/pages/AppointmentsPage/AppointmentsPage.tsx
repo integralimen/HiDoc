@@ -6,6 +6,8 @@ import { useAuth } from '../../entities/user/model/useAuth'
 import { CancelAppointment } from '../../features/appointment-cancel/ui/CancelAppointment'
 import { Button } from '../../shared/ui/Button/Button'
 import styles from './AppointmentsPage.module.css'
+import { useDispatch } from 'react-redux'
+import { baseApi } from '../../shared/api/baseApi'
 
 const formatter = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/Warsaw',
@@ -14,6 +16,7 @@ const formatter = new Intl.DateTimeFormat('en-GB', {
 })
 
 export function AppointmentsPage() {
+  const dispatch = useDispatch()
   const { user } = useAuth()
   const [now] = useState(() => Date.now())
 
@@ -21,7 +24,6 @@ export function AppointmentsPage() {
     currentData: appointments,
     isLoading,
     isError,
-    refetch,
   } = useGetAppointmentsQuery(
     {
       userId: user?.id ?? '',
@@ -48,7 +50,13 @@ export function AppointmentsPage() {
       ) : isError ? (
         <div role="alert">
           <p>Unable to load appointments.</p>
-          <Button onClick={() => void refetch()}>Try again</Button>
+          <Button
+            onClick={() =>
+              dispatch(baseApi.util.invalidateTags(['Appointments']))
+            }
+          >
+            Try again
+          </Button>
         </div>
       ) : appointments?.length ? (
         <ul className={styles.list}>

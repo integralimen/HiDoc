@@ -4,8 +4,11 @@ import { useGetDoctorQuery } from '../../entities/doctor/api/doctorApi'
 import { Button } from '../../shared/ui/Button/Button'
 import styles from './DoctorPage.module.css'
 import { SlotCalendar } from '../../widgets/SlotCalendar/SlotCalendar'
+import { useDispatch } from 'react-redux'
+import { baseApi } from '../../shared/api/baseApi'
 
 export function DoctorPage() {
+  const dispatch = useDispatch()
   const { doctorId = '' } = useParams()
   const { search } = useLocation()
   const catalogUrl = `/doctors${search}`
@@ -15,7 +18,6 @@ export function DoctorPage() {
     isFetching,
     isError,
     error,
-    refetch,
   } = useGetDoctorQuery(doctorId, { skip: !doctorId })
 
   if (isFetching) {
@@ -38,7 +40,11 @@ export function DoctorPage() {
     return (
       <main role="alert">
         <p>Unable to load doctor. Please try again.</p>
-        <Button onClick={() => void refetch()}>Try again</Button>
+        <Button
+          onClick={() => dispatch(baseApi.util.invalidateTags(['Doctors']))}
+        >
+          Try again
+        </Button>
       </main>
     )
   }

@@ -7,6 +7,8 @@ import styles from './SlotCalendar.module.css'
 import arrowLeft from '../../shared/assets/icons/arrow-left.svg'
 import arrowRight from '../../shared/assets/icons/arrow-right.svg'
 import { BookAppointment } from '../../features/appointment-create/ui/BookAppointment'
+import { useDispatch } from 'react-redux'
+import { baseApi } from '../../shared/api/baseApi'
 
 type SlotCalendarProps = {
   doctorId: string
@@ -46,16 +48,12 @@ function getDayKey(date: Date) {
 }
 
 export function SlotCalendar({ doctorId }: SlotCalendarProps) {
+  const dispatch = useDispatch()
   const [offset, setOffset] = useState(0)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showAll, setShowAll] = useState(false)
 
-  const {
-    currentData: slots,
-    isFetching,
-    isError,
-    refetch,
-  } = useGetSlotsQuery(doctorId)
+  const { currentData: slots, isFetching, isError } = useGetSlotsQuery(doctorId)
 
   const now = new Date()
   const today = getDayKey(now)
@@ -98,7 +96,11 @@ export function SlotCalendar({ doctorId }: SlotCalendarProps) {
       ) : isError ? (
         <div role="alert">
           <p>Unable to load appointments.</p>
-          <Button onClick={() => void refetch()}>Try again</Button>
+          <Button
+            onClick={() => dispatch(baseApi.util.invalidateTags(['Slots']))}
+          >
+            Try again
+          </Button>
         </div>
       ) : (
         <>

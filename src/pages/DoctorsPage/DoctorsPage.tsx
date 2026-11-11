@@ -5,8 +5,11 @@ import { useGetDoctorsQuery } from '../../entities/doctor/api/doctorApi'
 import { Button } from '../../shared/ui/Button/Button'
 import { Skeleton } from '../../shared/ui/Skeleton/Skeleton'
 import { useQueryParams } from '../../shared/lib/hooks/useQueryParams'
+import { useDispatch } from 'react-redux'
+import { baseApi } from '../../shared/api/baseApi'
 
 export function DoctorsPage() {
+  const dispatch = useDispatch()
   const { getParam, updateParams } = useQueryParams<
     'q' | 'city' | 'specialty' | 'page'
   >()
@@ -19,7 +22,6 @@ export function DoctorsPage() {
     currentData: data,
     isFetching,
     isError,
-    refetch,
   } = useGetDoctorsQuery({
     page,
     q: getParam('q'),
@@ -61,7 +63,11 @@ export function DoctorsPage() {
           <div role="alert">
             <p>Unable to load doctors. Please try again.</p>
 
-            <Button onClick={() => void refetch()}>Try again</Button>
+            <Button
+              onClick={() => dispatch(baseApi.util.invalidateTags(['Doctors']))}
+            >
+              Try again
+            </Button>
           </div>
         ) : data ? (
           <>
