@@ -3,6 +3,8 @@ import { ClientResponseError } from 'pocketbase'
 import { baseApi } from '../../../shared/api/baseApi'
 import { pb } from '../../../shared/api/pocketbase'
 import { getApiError } from '../../../shared/api/getApiError'
+import type { RootState } from '../../../app/store/store'
+import { slotApi } from '../../slot/api/slotApi'
 
 export type Appointment = {
   id: string
@@ -56,7 +58,39 @@ export const appointmentApi = baseApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: ['Slots', 'Appointments'],
+      async onQueryStarted(
+        slotId,
+        { dispatch, getState, queryFulfilled },
+      ): Promise<void> {
+        const doctorIds = slotApi.util.selectCachedArgsForQuery(
+          getState() as RootState,
+          'getSlots',
+        )
+
+        const patches = doctorIds.map((doctorId) =>
+          dispatch(
+            slotApi.util.updateQueryData('getSlots', doctorId, (slots) => {
+              const slot = slots.find((item) => item.id === slotId)
+
+              if (slot) {
+                slot.is_booked = true
+              }
+            }),
+          ),
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patches.forEach((patch) => patch.undo())
+        }
+      },
+      invalidatesTags: (result, error) =>
+        result
+          ? ['Slots', 'Appointments']
+          : error?.status === 409
+            ? ['Slots']
+            : [],
     }),
     getAppointments: build.query<Appointment[], AppointmentsQuery>({
       async queryFn({ userId, role }, { signal }) {
@@ -130,7 +164,61 @@ export const appointmentApi = baseApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: ['Slots', 'Appointments'],
+      async onQueryStarted(
+        id,
+        { dispatch, getState, queryFulfilled },
+      ): Promise<void> {
+        const queries = appointmentApi.util.selectCachedArgsForQuery(
+          getState() as RootState,
+          'getAppointments',
+        )
+        const appointment = queries
+          .flatMap(
+            (args) =>
+              appointmentApi.endpoints.getAppointments.select(args)(
+                getState() as RootState,
+              ).data ?? [],
+          )
+          .find((item) => item.id === id)
+        const patches = queries.map((args) =>
+          dispatch(
+            appointmentApi.util.updateQueryData(
+              'getAppointments',
+              args,
+              (appointments) => {
+                const appointment = appointments.find((item) => item.id === id)
+
+                if (appointment) {
+                  appointment.status = 'cancelled'
+                }
+              },
+            ),
+          ),
+        )
+        const doctorIds = slotApi.util.selectCachedArgsForQuery(
+          getState() as RootState,
+          'getSlots',
+        )
+
+        const slotPatches = doctorIds.map((doctorId) =>
+          dispatch(
+            slotApi.util.updateQueryData('getSlots', doctorId, (slots) => {
+              const slot = slots.find((item) => item.id === appointment?.slot)
+
+              if (slot) {
+                slot.is_booked = false
+              }
+            }),
+          ),
+        )
+        try {
+          await queryFulfilled
+        } catch {
+          patches.forEach((patch) => patch.undo())
+          slotPatches.forEach((patch) => patch.undo())
+        }
+      },
+      invalidatesTags: (result) => (result ? ['Slots', 'Appointments'] : []),
     }),
   }),
 })
